@@ -20,8 +20,8 @@ for f in files:
             bg_color = "#FFF799"
             bg_image_url = "https://checkin.fusionarena.ch/assets/poster/tikal.png"
 
-        print(f"Breite: {width}, Höhe: {height}")
-
+    # API ref
+    # https://www.remove.bg/api#api-reference
     response = requests.post(
         'https://api.remove.bg/v1.0/removebg',
         files={
