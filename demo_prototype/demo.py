@@ -12,12 +12,12 @@ for f in files:
         if width > height:
             # dies ist ein horizontales Bild
             # nur fa roter Hintergrund
-            bg_color = "#FF7A84"
-            bg_image_url = ""
+            bg_color = "red"
+            bg_image_url = "https://checkin.fusionarena.ch/assets/equipment-adventure-de.png"
         else:
             # dies ist ein vertikales Bild
             # tvrs plakat als hintergrund
-            bg_color = "#FFF799"
+            bg_color = "blue"
             bg_image_url = "https://checkin.fusionarena.ch/assets/poster/tikal.png"
 
     # API ref
@@ -25,13 +25,14 @@ for f in files:
     response = requests.post(
         'https://api.remove.bg/v1.0/removebg',
         files={
-            'image_file': open('images/' + f, 'rb'),
-            'bg_color': bg_color,
-            # 'bg_image_url': bg_image_url,
-            'format': 'jpg',
-            'size': 'preview'
+            'image_file': open('images/' + f, 'rb')
         },
-        data={'size': 'auto'},
+        data={
+            'size': 'preview',
+            'bg_image_url': bg_image_url,
+            # 'bg_color': 'FFFFFF', # you can only use 1 bg_parameter per request
+            'format': 'png'
+        },
         headers={'X-Api-Key': 'upJTVS9JT2StBJCm3KdBBzJ7'},
         ###
 
@@ -40,6 +41,14 @@ for f in files:
 
         ###
     )
+
+    """
+    # required for debugging
+    print("Response Headers:")
+    for header, value in response.headers.items():
+        print(f"{header}: {value}")
+    """
+
     if response.status_code == requests.codes.ok:
         path_processed = 'images_processed/' + f
         with open(path_processed, 'wb') as out:
