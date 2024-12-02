@@ -1,0 +1,43 @@
+from checkin import getLastPlayer, connectionCheckinDb, load_config, match_photo_to_player, store_mysql
+from detection import detect_marker, determine_court, get_original_datetime
+from graphMailer import send_email
+
+config = load_config("fa-config.json")
+connection = connectionCheckinDb(
+    config.get("host"),
+    config.get("user"),
+    config.get("password"),
+    config.get("database")
+)
+
+# Get photos vom google photos
+"""
+    Use this for further extension: https://github.com/polzerdo55862/google-photos-api/tree/main
+"""
+photos = [
+    "https://lh3.googleusercontent.com/pw/AP1GczMMsudAvkTx4o2K3WsDNMcACsv3EA9hQFGluAp-GmJn9ExhPDMOxyABC6clKGnHXIldDyfoyWXGyBwind4H7Jki6EVwtGxgd6LL-luHRwrNYVRf5rmj29aslledr28yLxrBCzQ_ck8OeH61QBjGH252uII6Qp2ixBIhmELxEjJxP5xEpqI9L7vNDnGUc1N6KdyQEwnWnoCMZHaoxAPeOEe99PuVN_vJN0BLa79FYaedEgBV4p5Uad2J_uoP0FdLlRot5pFvD48UmO5-8N3m5j457yEMJsUlnEse4VR4QJQYhjM-vLde-3pcLBamkqGFAxKCGim7oJOuF8y8U5R5KoDVgaRC6L5SOeky8mzEhmKGTAgjsAgQ-926g45j9Z8dAILsUnkld9NDqJ03o-9ySMwPouNs0XBeVjXQtBE8lSv63B0ANlZkK4YrqktCTpPCLfdFUnnwXgmsMcziEL7exuWRWJgX_ORecOsEMhiLyubOgvcs0ctePbz9XnYFLsmL8gG5ETcMrvUar452oC6eOJPoobbProFbBYBGEK9hi1NOspthL9v5HA2n8sydW3Xeonx_AntImjYAnUyVQdbFZXJjQgB81V6viEN48yyDKSAZ6yRoX17Anfupf1W0xiDMc1pZlvoejZ2v14yoNHeR-GHfALQmHQ1vBM_b4-ls7JBF8_Gu5dchmmdgoAJLiCtP1cP0DGvv6NOHeRgOnTZ-5EzgncUciiX_y_wOBowebCkqCMm-DEhjJlfHWXZFv2wINfVZbDRN_eumhB35oh_kKPuCklGBNcJhX8iDX6lVUjFKHiSvwHEsPq2M4UXcpbnbB1MsA7zaHiDaueo7Qm6KyYB1Gbdbru2uVV2eKefHYwwp4bxejxn4pUyp9QQsyEu5VSSxnVX6_F0vahSKYBWfBaLxMX__FLT3PD8i72D3Gof_p9NP4RO_AM9N1Jo=w2250-h3000-s-no?authuser=1",
+    "https://lh3.googleusercontent.com/pw/AP1GczMX89KA5ur3zPwP2cdXNfp_j7byh28X88A3rjg667aa4AuRtjyrv7ClOUBbW1Kkz8HyVQnpwa-8AcW3YsxLQTiVN5MHSDqXIEAVlc3BnZnrC5Mz6rgyNJUlFXP729UkuoWM_4ldTAJIHw6wvfQQDO19nB9vKkWazH6JD69lV9sFxQoD6fcQlRiQsPYyz4MwFM_ex7uQ16rh-ux4aStsEIB1n4TLwul6idagWMAJPeoTVWOMmHu5TUfz61PheaYu2FRYkGxGQACrv6Puzr8WL2CTDv8nIyXME8M0Vsc8nESLiA0M0JZ1rhve8GjnLpg4Y6v3pWi77npZsgBOdu7l0Z7KsGnE9suimkb7mVVieVjCLYpUQ_zTLQ90qOgN19e-qylF4_Wl2pRfsy0w0LAOpmTWMjGwA_x8NgLOsYxXrGYV-qB4RILAP2BUTzm6ktJrubfyIFfxI5Vrd0LwbVu4WFvPpFK55_PrtJZduwXVWrrXQVzYPmTj6IAXVRdKWbPEamk_MA7IlYtJGbbn-3sYvcuBkzlQXGD1eE1SOqZRQSTMVbyIyxhOgc9ppkta4fbgCvolQkCha3D2wdJjymGa-ZjCkQrh9Xf5KFgXK3_q2CGY1qRsUpxW53SpsACu2lG8ZVV-dSKfOrO2fWewmmtb4YFh6HQ8o1SeEmfHAJ1R1p1uhkrthX0oeT4UlnDoh_2hM27ha2offlO2IfuNmT1Xmn0R3uwY-heaBuRNSRGj7FRRa6TzZJG2QCjpMjkyGZ8VjHLnTiJM24BpSfuF_4abh5LP326T9geK5q7QGkjnNT8YrXKx3AiVe0S_noxosqBYLoxUaM7LTWvgPPj4eIYsGRZ-KNN5gvCDjqyqMstt7D1WHxzCFOB-rDOOw6staTKi3DLsjJwTeoO2QyDKj0eaBJ58N9-N1kD0QIkP7f70QE4eNtCnQK5XJD88Byg=w4000-h3000-s-no?authuser=1"
+]
+
+# Take one photo out of the list
+photo = photos.pop()
+
+# determine datetime
+date_created = get_original_datetime(photo)
+
+# try to detect aruco markes on these photos
+# print(detect_marker("demo_prototype/images/h3.jpeg"))
+ids = detect_marker(photo)
+location_data = determine_court(ids)
+courtId = location_data['court']['courtId']
+customerIds = match_photo_to_player(photo, courtId)
+
+store_mysql(photo, customerIds, courtId)
+
+send_email(photo, customerIds)
+
+print(getLastPlayer(connection))
+connection.close()
+
+
+

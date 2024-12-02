@@ -33,12 +33,9 @@ def getLastPlayer(connection):
     return result
 
 
-config = load_config("fa-config.json")
-connection = connectionCheckinDb(
-    config.get("host"),
-    config.get("user"),
-    config.get("password"),
-    config.get("database")
-)
-print(getLastPlayer(connection))
-connection.close()
+def match_photo_to_player(photo, court):
+    return 1
+
+
+def store_mysql():
+    return 1
