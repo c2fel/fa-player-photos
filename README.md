@@ -19,10 +19,19 @@ Detection of player and team photos on the playing court and classification to c
 
 ## Examples
 
+### Detection of ArUco markers
+- Scene A
+![Scene A](training/output/galgenen1.png "Scene A")
+
+- Scene B
+![Scene B](training/output/galgenen3.png "Scene B")
+
+### Background removal
 - Original image
-![MarineGEO circle logo](demo_prototype/images/h3.jpeg "A group of players")
+![original image taken in FA location](demo_prototype/images/h3.jpeg "A group of players")
 
 - images replace by dummy background
-![MarineGEO circle logo](demo_prototype/images_processed/h3.jpeg "A group of players with dummy background")
+![Remove players from background and set new bg image depending on context](demo_prototype/images_processed/h3.jpeg "A group of players with dummy background")
 
 See [demo.py](demo_prototype/demo.py) for more
+
