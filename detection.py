@@ -1,5 +1,4 @@
 import os
-
 import cv2
 import cv2.aruco as aruco
 import random
@@ -61,4 +60,4 @@ def get_original_datetime(photo):
     return 1
 
 
-print(detect_marker("training/images/galgenen1.jpeg"))
+print(detect_marker("training/input/galgenen3.jpeg"))
